@@ -1,0 +1,208 @@
+---
+import { Image } from "astro:assets";
+import ProjectCard from "@/components/ProjectCard.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import heroImg from "@/assets/hero-cover.jpg";
+import { siteConfig } from "@/config/site";
+import { getProjects, requireProject } from "@/data/projects";
+
+const projects = await getProjects();
+const featured = siteConfig.featured.homepageGrid.map((slug) => requireProject(projects, slug));
+const solo = requireProject(projects, siteConfig.featured.homepageSolo);
+
+const siteUrl = (Astro.site ?? new URL(Astro.url.origin)).href;
+
+const facts = [
+    { value: "6+", label: "Years shooting" },
+    { value: String(projects.length).padStart(2, "0"), label: "Featured projects" },
+    { value: "02", label: "Disciplines" },
+    { value: "100%", label: "Story-first" },
+];
+
+const services = [
+    {
+        name: "Photography",
+        tag: "Portrait · editorial · documentary",
+        copy: "On-location and studio shoots, shot and retouched with a light, natural hand — likeness over correction.",
+    },
+    {
+        name: "Videography",
+        tag: "Wedding · commercial · music video",
+        copy: "From single-camera coverage to full production — shooting, directing on set, and cutting the final film.",
+    },
+    {
+        name: "Editing & post-production",
+        tag: "Colour · retouching · pacing",
+        copy: "Photo retouching and video editing for footage shot elsewhere — grading, pacing, and finishing to picture lock.",
+    },
+];
+
+const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: siteConfig.name,
+    url: siteUrl,
+    jobTitle: siteConfig.tagline,
+    email: siteConfig.email,
+    sameAs: [siteConfig.social.instagram],
+};
+---
+
+<BaseLayout
+    title={`${siteConfig.name} — ${siteConfig.tagline}`}
+    description="Photography and videography — portraits, editorial, weddings, commercial film and music video, shot and edited end to end."
+>
+    <main id="main-content">
+        {/* ---------------------------------------------------------------- Hero */}
+        <section
+            class="shell grid items-center gap-x-12 gap-y-10 pb-4 pt-8 md:grid-cols-12 md:pb-10 md:pt-12"
+        >
+            <div class="hero-in md:col-span-5">
+                <h1 class="type-hero">Visual stories, captured and crafted</h1>
+                <p class="type-lead mt-7 max-w-[42ch]">
+                    I'm {siteConfig.name}, a photographer and videographer. From a single portrait
+                    to a full production, I shoot it and edit it — start to finish.
+                </p>
+                <div class="mt-9 flex flex-wrap gap-3">
+                    <a href="/portfolio" class="btn btn-primary">View the portfolio</a>
+                    <a href="/contact" class="btn btn-outline">Get in touch</a>
+                </div>
+            </div>
+
+            <figure class="hero-in md:col-span-7" style="--reveal-delay:120ms">
+                <div class="overflow-hidden bg-surface">
+                    <Image
+                        src={heroImg}
+                        alt="Lamfy on set, framing a shot"
+                        width={1600}
+                        height={1400}
+                        format="webp"
+                        loading="eager"
+                        decoding="sync"
+                        class="parallax aspect-[4/3] w-full object-cover object-right md:aspect-[8/7]"
+                    />
+                </div>
+                <figcaption
+                    class="mono mt-3 flex justify-between gap-4 text-[0.625rem] uppercase tracking-[0.05em] text-muted"
+                >
+                    <span>Behind the scenes</span>
+                    <span>Photography &amp; film</span>
+                </figcaption>
+            </figure>
+        </section>
+
+        {/* Spec band */}
+        <div class="mt-14 border-y border-line md:mt-20">
+            <dl class="shell grid grid-cols-2 md:grid-cols-4">
+                {
+                    facts.map((fact, index) => (
+                        <div class="fact" data-reveal style={`--reveal-delay:${index * 70}ms`}>
+                            <dt class="label">{fact.label}</dt>
+                            <dd class="mt-2.5 text-2xl font-medium tracking-[-0.03em] md:text-3xl">
+                                {fact.value}
+                            </dd>
+                        </div>
+                    ))
+                }
+            </dl>
+        </div>
+
+        {/* ------------------------------------------------------------ Selected */}
+        <section class="shell mt-24 md:mt-36">
+            <div class="rule" data-reveal="line"></div>
+            <div class="mt-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4" data-reveal>
+                <h2 class="type-h2 max-w-[14ch]">A few recent projects</h2>
+                <a href="/portfolio" class="link link-mono pb-1.5 text-muted">See all work</a>
+            </div>
+
+            <div class="mt-12 grid gap-x-8 gap-y-14 md:mt-14 md:grid-cols-3">
+                {
+                    featured.map((project, index) => (
+                        <ProjectCard project={project} index={index} revealDelay={index * 110} />
+                    ))
+                }
+            </div>
+        </section>
+
+        {/* ------------------------------------------------------------- The solo */}
+        <section class="mt-24 md:mt-36">
+            <div class="shell grid items-center gap-10 md:grid-cols-12 md:gap-12">
+                <div class="md:col-span-7 lg:col-span-8">
+                    <a
+                        href={`/portfolio/${solo.slug}`}
+                        class="group block overflow-hidden bg-surface"
+                        data-reveal="mask"
+                        aria-label={`${solo.title} — ${solo.shortDescription}`}
+                    >
+                        {
+                            /* Wrapper carries the unmask clip so the image keeps its own
+                hover transition — see the mask notes in src/styles.css. */
+                        }
+                        <div>
+                            <Image
+                                src={solo.images[0]}
+                                alt=""
+                                width={1600}
+                                height={1100}
+                                loading="lazy"
+                                format="webp"
+                                class="aspect-[5/4] w-full object-cover transition-transform duration-[1100ms] ease-out group-hover:scale-[1.04] md:aspect-[16/11]"
+                            />
+                        </div>
+                    </a>
+                </div>
+
+                <div class="md:col-span-5 lg:col-span-4" data-reveal style="--reveal-delay:140ms">
+                    <h2 class="type-h2">One project, start to finish</h2>
+                    <p class="type-body mt-6 max-w-[44ch]">{solo.description}</p>
+
+                    <dl class="mono mt-9 border-t border-line text-[0.8125rem]">
+                        {
+                            [
+                                ["Client", solo.client],
+                                ["Role", solo.role],
+                                ["Equipment", solo.equipment],
+                                ["Year", solo.year],
+                            ].map(([term, value]) => (
+                                <div class="flex justify-between gap-6 border-b border-line py-3">
+                                    <dt class="text-muted">{term}</dt>
+                                    <dd class="text-right">{value}</dd>
+                                </div>
+                            ))
+                        }
+                    </dl>
+
+                    <a href={`/portfolio/${solo.slug}`} class="btn btn-primary mt-9"
+                        >See the project</a
+                    >
+                </div>
+            </div>
+        </section>
+
+        {/* ------------------------------------------------------------ Services */}
+        <section class="shell mt-24 md:mt-36">
+            <div class="rule" data-reveal="line"></div>
+            <h2 class="type-h2 mt-8 max-w-[18ch]" data-reveal>
+                Photography, film, and everything after the shoot
+            </h2>
+
+            <div class="mt-12 grid gap-x-8 gap-y-12 md:grid-cols-3">
+                {
+                    services.map((service, index) => (
+                        <div
+                            class="border-t border-line pt-6"
+                            data-reveal
+                            style={`--reveal-delay:${index * 110}ms`}
+                        >
+                            <h3 class="type-h3">{service.name}</h3>
+                            <p class="label mt-3">{service.tag}</p>
+                            <p class="type-body mt-4 text-[0.9375rem]">{service.copy}</p>
+                        </div>
+                    ))
+                }
+            </div>
+        </section>
+    </main>
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+</BaseLayout>

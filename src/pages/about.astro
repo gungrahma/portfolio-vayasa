@@ -1,0 +1,201 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import aboutCoverImg from "@/assets/about-cover.jpg";
+import aboutDetailImg from "@/assets/about-detail.jpg";
+import { siteConfig, pageTitle } from "@/config/site";
+
+const principles = [
+    {
+        heading: "Story first",
+        copy: "Every shoot starts with the story, not the shot list. Composition and edit choices follow from what the moment is actually about.",
+    },
+    {
+        heading: "Shot and edited by hand",
+        copy: "The same person who's behind the camera is the one grading the film or retouching the frame. Nothing is handed off halfway.",
+    },
+    {
+        heading: "Clear, fast delivery",
+        copy: "Straightforward pricing, realistic timelines, and previews along the way — no surprises at final delivery.",
+    },
+];
+
+const facts = [
+    { value: "6+", label: "Years shooting" },
+    { value: "02", label: "Disciplines" },
+    { value: "1–3", label: "Weeks turnaround" },
+    { value: "100%", label: "Client-focused" },
+];
+
+const services = [
+    {
+        name: "Photography",
+        copy: "Portrait, editorial and documentary shoots, on location or in studio.",
+    },
+    {
+        name: "Videography",
+        copy: "Wedding coverage, commercial film and music video, from concept to final cut.",
+    },
+    {
+        name: "Editing & post-production",
+        copy: "Photo retouching and video editing for footage shot elsewhere.",
+    },
+];
+---
+
+<BaseLayout
+    title={pageTitle("About")}
+    description="Lamfy is a photographer and videographer working across portraits, editorial, weddings, commercial film and music video."
+    image={aboutCoverImg}
+>
+    <main id="main-content">
+        <section class="shell pb-12 pt-12 md:pb-16 md:pt-20">
+            <h1 class="type-h1 hero-in max-w-[11ch]">Hi, I'm {siteConfig.name}</h1>
+            <p class="type-lead hero-in mt-8 max-w-[58ch]" style="--reveal-delay:120ms">
+                A photographer and videographer working across portraits, editorial, weddings,
+                commercial film and music video — shooting and editing every project myself, start
+                to finish.
+            </p>
+        </section>
+
+        <figure class="hero-in overflow-hidden bg-surface" style="--reveal-delay:260ms">
+            <Image
+                src={aboutCoverImg}
+                alt="Lamfy reviewing footage on location"
+                width={1920}
+                height={1080}
+                format="webp"
+                loading="eager"
+                decoding="sync"
+                class="parallax h-[50vh] w-full object-cover md:h-[72vh]"
+            />
+        </figure>
+
+        {/* -------------------------------------------------------------- Origin */}
+        <section class="shell mt-24 grid gap-8 md:mt-36 md:grid-cols-12">
+            <div class="md:col-span-5" data-reveal>
+                <h2 class="type-h2 max-w-[12ch]">It started with a borrowed camera</h2>
+            </div>
+            <div class="md:col-span-6 md:col-start-7" data-reveal style="--reveal-delay:120ms">
+                <p class="type-body">
+                    What began as shooting friends and small local events grew into a full practice
+                    across photography and videography — portraits, weddings, commercial work, and
+                    music video, shot on location and edited in-house.
+                </p>
+                <p class="type-body mt-5">
+                    The work stays personal on purpose: one person on the shoot, one person on the
+                    edit, so the story doesn't get lost in the handoff.
+                </p>
+            </div>
+        </section>
+
+        {/* ---------------------------------------------------------- Principles */}
+        <section class="shell mt-24 md:mt-36">
+            <div class="rule" data-reveal="line"></div>
+            <h2 class="type-h2 mt-8 max-w-[16ch]" data-reveal>How I work</h2>
+
+            <div class="mt-12 grid gap-x-8 gap-y-12 md:grid-cols-3">
+                {
+                    principles.map((principle, index) => (
+                        <div
+                            class="border-t border-line pt-6"
+                            data-reveal
+                            style={`--reveal-delay:${index * 110}ms`}
+                        >
+                            <h3 class="type-h3">{principle.heading}</h3>
+                            <p class="type-body mt-4 text-[0.9375rem]">{principle.copy}</p>
+                        </div>
+                    ))
+                }
+            </div>
+        </section>
+
+        {/* -------------------------------------------------------------- Quote */}
+        <section class="shell mt-24 grid items-center gap-10 md:mt-36 md:grid-cols-12 md:gap-12">
+            <div class="md:col-span-5">
+                <div class="overflow-hidden bg-surface" data-reveal="mask">
+                    <div>
+                        <Image
+                            src={aboutDetailImg}
+                            alt="Close-up of hands adjusting a camera"
+                            width={1080}
+                            height={1440}
+                            format="webp"
+                            loading="lazy"
+                            class="aspect-[3/4] w-full object-cover"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div class="md:col-span-6 md:col-start-7" data-reveal style="--reveal-delay:140ms">
+                <blockquote>
+                    <p
+                        class="type-h3 max-w-[26ch] text-[clamp(1.5rem,2.8vw,2.25rem)] leading-[1.15]"
+                    >
+                        "I'd rather deliver ten frames that mean something than a hundred that
+                        don't."
+                    </p>
+                    <footer class="label mt-6">
+                        {siteConfig.name} — photographer &amp; videographer
+                    </footer>
+                </blockquote>
+                <p class="type-body mt-8 max-w-[48ch] border-t border-line pt-6 text-[0.9375rem]">
+                    Every project gets the same process: a short conversation about the story, a
+                    shoot day built around the light and the people in front of the camera, and an
+                    edit that stays honest to both.
+                </p>
+            </div>
+        </section>
+
+        {/* -------------------------------------------------------------- Facts */}
+        <section class="mt-24 border-y border-line md:mt-36" aria-label="At a glance">
+            <dl class="shell grid grid-cols-2 md:grid-cols-4">
+                {
+                    facts.map((fact, index) => (
+                        <div class="fact" data-reveal style={`--reveal-delay:${index * 70}ms`}>
+                            <dt class="label">{fact.label}</dt>
+                            <dd class="mt-2.5 text-2xl font-medium tracking-[-0.03em] md:text-3xl">
+                                {fact.value}
+                            </dd>
+                        </div>
+                    ))
+                }
+            </dl>
+        </section>
+
+        {/* ------------------------------------------------------------ Services */}
+        <section id="services" class="shell mt-24 md:mt-36">
+            <div class="rule" data-reveal="line"></div>
+            <h2 class="type-h2 mt-8 max-w-[16ch]" data-reveal>Services</h2>
+
+            <div class="mt-12 grid gap-x-8 gap-y-12 md:grid-cols-3">
+                {
+                    services.map((service, index) => (
+                        <div
+                            class="border-t border-line pt-6"
+                            data-reveal
+                            style={`--reveal-delay:${index * 110}ms`}
+                        >
+                            <h3 class="type-h3">{service.name}</h3>
+                            <p class="type-body mt-4 text-[0.9375rem]">{service.copy}</p>
+                        </div>
+                    ))
+                }
+            </div>
+        </section>
+
+        {/* ----------------------------------------------------------------- CTA */}
+        <section class="shell mt-24 md:mt-36">
+            <div class="grid items-end gap-8 md:grid-cols-12" data-reveal>
+                <div class="md:col-span-7">
+                    <h2 class="type-h2 max-w-[16ch]">Have a shoot or a film in mind?</h2>
+                </div>
+                <div class="flex flex-wrap gap-3 md:col-span-5 md:justify-end">
+                    <a href="/portfolio" class="btn btn-primary">See the portfolio</a>
+                    <a href="/contact" class="btn btn-outline">Get in touch</a>
+                </div>
+            </div>
+        </section>
+    </main>
+</BaseLayout>

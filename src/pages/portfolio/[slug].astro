@@ -1,0 +1,204 @@
+---
+import { Image } from "astro:assets";
+import ProjectCard from "@/components/ProjectCard.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { siteConfig, pageTitle } from "@/config/site";
+import { getProjects, getRelated, type Project } from "@/data/projects";
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project, related: getRelated(projects, project.slug) },
+  }));
+}
+
+interface Props {
+  project: Project;
+  related: Project[];
+}
+
+const { project, related } = Astro.props;
+
+const origin = Astro.site ?? new URL(Astro.url.origin);
+const projectUrl = new URL(`/portfolio/${project.slug}`, origin).href;
+
+const specs = [
+  ["Client", project.client],
+  ["Role", project.role],
+  ["Equipment", project.equipment],
+  ["Year", project.year],
+];
+
+const creativeWorkSchema = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: project.title,
+  description: project.description,
+  image: project.images.map((image) => new URL(image.src, origin).href),
+  creator: { "@type": "Person", name: siteConfig.name },
+  datePublished: project.year,
+  url: projectUrl,
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Portfolio", item: new URL("/portfolio", origin).href },
+    { "@type": "ListItem", position: 2, name: project.title, item: projectUrl },
+  ],
+};
+---
+
+<BaseLayout title={pageTitle(project.title)} description={project.description.slice(0, 155)} image={project.images[0]}>
+  <main id="main-content" class="shell">
+    <nav class="mono flex gap-2 py-6 text-[0.6875rem] uppercase tracking-[0.05em] text-muted" aria-label="Breadcrumb">
+      <a href="/portfolio" class="link">Portfolio</a>
+      <span aria-hidden="true">/</span>
+      <span class="text-ink" aria-current="page">{project.title}</span>
+    </nav>
+
+    <div class="grid items-start gap-x-12 gap-y-10 border-t border-line pt-8 lg:grid-cols-12">
+      {/* ------------------------------------------------------------ Gallery */}
+      <section class="lg:col-span-7" aria-label={`${project.title} images`} data-project-gallery>
+        <div class="relative overflow-hidden bg-surface">
+          {
+            project.images.map((image, index) => (
+              <div class:list={["gallery-panel", index !== 0 && "is-hidden"]} data-gallery-panel={index}>
+                <Image
+                  src={image}
+                  alt={`${project.title} — view ${index + 1} of ${project.images.length}`}
+                  width={1440}
+                  height={1800}
+                  format="webp"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding={index === 0 ? "sync" : "async"}
+                  class="aspect-[4/5] w-full object-cover"
+                />
+              </div>
+            ))
+          }
+        </div>
+
+        {
+          project.images.length > 1 && (
+            <div class="mt-3 grid grid-cols-3 gap-3" role="group" aria-label="Choose an image">
+              {project.images.map((image, index) => (
+                <button
+                  type="button"
+                  class="gallery-thumb overflow-hidden bg-surface"
+                  data-gallery-thumb={index}
+                  aria-label={`Show view ${index + 1}`}
+                  aria-pressed={index === 0 ? "true" : "false"}
+                >
+                  <Image
+                    src={image}
+                    alt=""
+                    width={360}
+                    height={360}
+                    format="webp"
+                    loading="lazy"
+                    class="aspect-square w-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )
+        }
+      </section>
+
+      {/* ------------------------------------------------------------- Details */}
+      <div class="lg:sticky lg:top-28 lg:col-span-5">
+        <p class="label">
+          {project.type} · {project.category}
+        </p>
+        <h1 class="type-h2 mt-5">{project.title}</h1>
+
+        <p class="type-body mt-8 max-w-[46ch]">{project.description}</p>
+
+        <dl class="mono mt-10 border-t border-line text-[0.8125rem]">
+          {
+            specs.map(([term, value]) => (
+              <div class="flex justify-between gap-6 border-b border-line py-3">
+                <dt class="text-muted">{term}</dt>
+                <dd class="text-right">{value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a href="/contact" class="btn btn-primary">Enquire about a project like this</a>
+        </div>
+      </div>
+    </div>
+
+    {/* ------------------------------------------------------------- Related */}
+    <section class="mt-32 md:mt-44">
+      <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 border-t border-line pt-8" data-reveal>
+        <h2 class="type-h2 max-w-[16ch]">More work</h2>
+        <a href="/portfolio" class="link link-mono pb-1.5 text-muted">View all</a>
+      </div>
+
+      <div class="mt-12 grid gap-x-8 gap-y-14 md:mt-14 md:grid-cols-3">
+        {related.map((item, index) => <ProjectCard project={item} headingLevel="h3" revealDelay={index * 110} />)}
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .gallery-panel.is-hidden {
+      display: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .gallery-panel:not(.is-hidden) {
+        animation: panel-in 600ms var(--ease-out-expo) both;
+      }
+
+      @keyframes panel-in {
+        from {
+          opacity: 0;
+          transform: scale(1.015);
+        }
+      }
+    }
+
+    .gallery-thumb {
+      box-shadow: inset 0 0 0 1px var(--line);
+      transition: box-shadow 260ms ease;
+    }
+
+    .gallery-thumb:hover {
+      box-shadow: inset 0 0 0 1px var(--line-strong);
+    }
+
+    .gallery-thumb[aria-pressed="true"] {
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+  </style>
+
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(creativeWorkSchema)}></script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}></script>
+
+  <script is:inline>
+    (() => {
+      const gallery = document.querySelector("[data-project-gallery]");
+      if (!gallery) return;
+
+      const panels = Array.from(gallery.querySelectorAll("[data-gallery-panel]"));
+      const thumbs = Array.from(gallery.querySelectorAll("[data-gallery-thumb]"));
+
+      thumbs.forEach((thumb) => {
+        thumb.addEventListener("click", () => {
+          const active = thumb.dataset.galleryThumb;
+          panels.forEach((panel) => panel.classList.toggle("is-hidden", panel.dataset.galleryPanel !== active));
+          thumbs.forEach((button) => {
+            button.setAttribute("aria-pressed", String(button === thumb));
+          });
+        });
+      });
+    })();
+  </script>
+</BaseLayout>

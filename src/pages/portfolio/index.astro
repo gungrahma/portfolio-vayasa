@@ -1,0 +1,148 @@
+---
+import ProjectCard from "@/components/ProjectCard.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { siteConfig, pageTitle } from "@/config/site";
+import { getProjectFilters, getProjects } from "@/data/projects";
+
+const projects = await getProjects();
+const { types, categories } = getProjectFilters(projects);
+---
+
+<BaseLayout
+  title={pageTitle("Portfolio")}
+  description={`Browse the full ${siteConfig.name} portfolio. Filter by discipline and category — photography, videography, and everything in between.`}
+>
+  <main id="main-content">
+    <section class="shell pb-12 pt-12 md:pb-16 md:pt-20">
+      <h1 class="type-h1 hero-in max-w-[14ch]">Selected photography and film work</h1>
+      <p class="type-lead hero-in mt-8 max-w-[52ch]" style="--reveal-delay:120ms">
+        A running collection of shoots and edits. Filter by discipline or category to find what you're after.
+      </p>
+    </section>
+
+    <div class="shell pb-32">
+      <section class="border-t border-line pb-10 pt-7" aria-label="Filter and sort the portfolio">
+        <div class="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between">
+          <div class="space-y-5">
+            <div data-filter-group="type">
+              <p class="label mb-2.5" id="filter-type">Discipline</p>
+              <div class="flex flex-wrap items-center gap-2" role="group" aria-labelledby="filter-type">
+                <button class="chip" type="button" data-filter-value="all" aria-pressed="true">All work</button>
+                {
+                  types.map((type) => (
+                    <button class="chip" type="button" data-filter-value={type} aria-pressed="false">
+                      {type}
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
+
+            <div data-filter-group="category">
+              <p class="label mb-2.5" id="filter-category">Category</p>
+              <div class="flex flex-wrap items-center gap-2" role="group" aria-labelledby="filter-category">
+                <button class="chip" type="button" data-filter-value="all" aria-pressed="true">All categories</button>
+                {
+                  categories.map((category) => (
+                    <button class="chip" type="button" data-filter-value={category} aria-pressed="false">
+                      {category}
+                    </button>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="shrink-0">
+            <label class="label mb-2.5 block" for="portfolio-sort">Sort by</label>
+            <select id="portfolio-sort" class="field mono w-full text-[0.8125rem] lg:w-52" data-portfolio-sort>
+              <option value="featured">Featured</option>
+              <option value="year-desc">Year — newest first</option>
+              <option value="year-asc">Year — oldest first</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <p class="mono border-t border-line py-4 text-[0.6875rem] uppercase tracking-[0.05em] text-muted" aria-live="polite">
+        <span data-portfolio-count>{String(projects.length).padStart(2, "0")}</span>&#32;<span
+          data-portfolio-count-label>projects</span
+        >&#32;shown
+      </p>
+
+      <p class="type-h3 hidden py-32 text-center text-muted" data-portfolio-empty>
+        No projects match that combination.
+      </p>
+
+      <ul class="grid grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3" data-portfolio-grid>
+        {
+          projects.map((project, index) => (
+            <li
+              data-portfolio-item
+              data-type={project.type}
+              data-category={project.category}
+              data-year={project.year}
+              data-index={index}
+            >
+              <ProjectCard project={project} eager={index < 3} index={index} revealDelay={(index % 3) * 110} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </main>
+
+  <script is:inline>
+    (() => {
+      const grid = document.querySelector("[data-portfolio-grid]");
+      const items = Array.from(document.querySelectorAll("[data-portfolio-item]"));
+      const countNode = document.querySelector("[data-portfolio-count]");
+      const countLabel = document.querySelector("[data-portfolio-count-label]");
+      const empty = document.querySelector("[data-portfolio-empty]");
+      const sort = document.querySelector("[data-portfolio-sort]");
+      const filters = { type: "all", category: "all" };
+
+      if (!grid || !sort) return;
+
+      function applyFilters() {
+        const visible = items.filter(
+          (item) =>
+            (filters.type === "all" || item.dataset.type === filters.type) &&
+            (filters.category === "all" || item.dataset.category === filters.category),
+        );
+
+        visible.sort((a, b) => {
+          if (sort.value === "year-desc") return Number(b.dataset.year) - Number(a.dataset.year);
+          if (sort.value === "year-asc") return Number(a.dataset.year) - Number(b.dataset.year);
+          return Number(a.dataset.index) - Number(b.dataset.index);
+        });
+
+        items.forEach((item) => (item.hidden = true));
+        visible.forEach((item) => {
+          item.hidden = false;
+          grid.appendChild(item);
+        });
+
+        countNode.textContent = String(visible.length).padStart(2, "0");
+        countLabel.textContent = visible.length === 1 ? "project" : "projects";
+        empty.classList.toggle("hidden", visible.length > 0);
+        grid.classList.toggle("hidden", visible.length === 0);
+      }
+
+      document.querySelectorAll("[data-filter-group]").forEach((group) => {
+        group.addEventListener("click", (event) => {
+          const button = event.target.closest("button[data-filter-value]");
+          if (!button) return;
+
+          filters[group.dataset.filterGroup] = button.dataset.filterValue;
+          group.querySelectorAll("button").forEach((chip) => {
+            chip.setAttribute("aria-pressed", String(chip === button));
+          });
+          applyFilters();
+        });
+      });
+
+      sort.addEventListener("change", applyFilters);
+    })();
+  </script>
+</BaseLayout>

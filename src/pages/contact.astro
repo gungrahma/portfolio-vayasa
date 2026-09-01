@@ -1,0 +1,63 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { siteConfig, pageTitle } from "@/config/site";
+
+const services = ["Photography", "Videography", "Photo editing", "Video editing & production"];
+---
+
+<BaseLayout
+  title={pageTitle("Contact")}
+  description={`Get in touch with ${siteConfig.name} about photography or videography work — shoots, editing, and production.`}
+>
+  <main id="main-content">
+    <section class="shell pb-12 pt-12 md:pb-16 md:pt-20">
+      <h1 class="type-h1 hero-in max-w-[14ch]">Let's work together</h1>
+      <p class="type-lead hero-in mt-8 max-w-[52ch]" style="--reveal-delay:120ms">
+        Available for photography and videography projects — from a single shoot to full production and editing.
+        Send a note with a few details and I'll get back to you.
+      </p>
+    </section>
+
+    <section class="shell grid gap-10 pb-32 md:grid-cols-12 md:gap-12">
+      <div class="md:col-span-6" data-reveal>
+        <h2 class="type-h3">Get in touch</h2>
+        <p class="type-body mt-4 max-w-[42ch]">
+          Email is the fastest way to reach me. Include what you're shooting, roughly when, and where.
+        </p>
+
+        <dl class="mono mt-8 border-t border-line text-[0.9375rem]">
+          <div class="flex flex-wrap items-baseline justify-between gap-4 border-b border-line py-4">
+            <dt class="text-muted">Email</dt>
+            <dd>
+              <a href={`mailto:${siteConfig.email}`} class="link">{siteConfig.email}</a>
+            </dd>
+          </div>
+          <div class="flex flex-wrap items-baseline justify-between gap-4 border-b border-line py-4">
+            <dt class="text-muted">Instagram</dt>
+            <dd>
+              <a href={siteConfig.social.instagram} target="_blank" rel="noopener noreferrer" class="link">
+                @{siteConfig.name.toLowerCase()}
+              </a>
+            </dd>
+          </div>
+        </dl>
+
+        <a href={`mailto:${siteConfig.email}`} class="btn btn-primary mt-9">Email {siteConfig.name}</a>
+      </div>
+
+      <div class="md:col-span-5 md:col-start-8" data-reveal style="--reveal-delay:120ms">
+        <h2 class="type-h3">Services</h2>
+        <ul class="mono mt-6 border-t border-line text-[0.9375rem]">
+          {
+            services.map((service) => (
+              <li class="border-b border-line py-4">{service}</li>
+            ))
+          }
+        </ul>
+        <p class="type-body mt-8 max-w-[38ch] text-[0.9375rem]">
+          Not sure which service fits? Describe the project and I'll help you figure out the right approach.
+        </p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

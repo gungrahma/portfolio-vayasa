@@ -1,0 +1,80 @@
+---
+import { siteConfig } from "@/config/site";
+
+const year = new Date().getFullYear();
+
+// The contact address is appended to the last column so it is configured in
+// one place rather than duplicated into the footer link list.
+const columns = siteConfig.footerColumns.map((column, index) =>
+    index === siteConfig.footerColumns.length - 1
+        ? {
+              ...column,
+              links: [
+                  ...column.links,
+                  { label: siteConfig.email, href: `mailto:${siteConfig.email}` },
+              ],
+          }
+        : column,
+);
+---
+
+<footer id="contact" class="mt-24 border-t border-line md:mt-36">
+    {/* ------------------------------------------------------------- Contact */}
+    <section class="shell border-b border-line py-16 md:py-24" aria-labelledby="footer-cta-heading">
+        <div class="mx-auto max-w-[34rem] text-center" data-reveal>
+            <h2 id="footer-cta-heading" class="type-h2">Have a project in mind?</h2>
+            <p class="type-body mt-5">
+                Available for photography and videography work — get in touch to talk details.
+            </p>
+            <div class="mt-9 flex flex-wrap justify-center gap-3">
+                <a href={`mailto:${siteConfig.email}`} class="btn btn-primary"
+                    >Email {siteConfig.name}</a
+                >
+                <a
+                    href={siteConfig.social.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-outline"
+                >
+                    Instagram
+                </a>
+            </div>
+        </div>
+    </section>
+
+    {/* ----------------------------------------------------------------- Links */}
+    <div class="shell pt-16">
+        <div class="grid gap-12 md:grid-cols-12 md:gap-8">
+            <div class="md:col-span-5">
+                <p class="text-[0.9375rem] font-semibold uppercase tracking-[-0.01em]">
+                    {siteConfig.name}
+                </p>
+                <p class="type-body mt-4 max-w-[34ch] text-[0.9375rem]">{siteConfig.footerBlurb}</p>
+            </div>
+
+            {
+                columns.map((column) => (
+                    <nav class="md:col-span-2 md:last:col-span-3" aria-label={column.heading}>
+                        <h2 class="label">{column.heading}</h2>
+                        <ul class="mt-5 space-y-2.5">
+                            {column.links.map((link) => (
+                                <li>
+                                    <a href={link.href} class="link text-[0.9375rem] text-muted">
+                                        {link.label}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                ))
+            }
+        </div>
+
+        <div class="mt-20 border-t border-line py-8">
+            <p class="mono text-[0.6875rem] uppercase tracking-[0.05em] text-muted">
+                © {year}
+                {siteConfig.name} — photography &amp; videography
+            </p>
+        </div>
+    </div>
+</footer>
