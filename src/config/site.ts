@@ -46,6 +46,9 @@ export const siteConfig = {
   /** Browser theme colour. Keep in step with `--canvas` in src/styles.css. */
   themeColor: "#f4f4f2",
 
+  /** Browser theme colour in dark mode. Keep in step with the dark `--canvas` in src/styles.css. */
+  themeColorDark: "#111110",
+
   /**
    * Fallback social share card, served from public/. Used by any page that
    * does not pass its own `image` — project pages pass their photography, so

@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import ThemeToggle from "@/components/ThemeToggle.astro";
 import { siteConfig } from "@/config/site";
 import { getProjects, requireProject } from "@/data/projects";
 
@@ -44,6 +45,7 @@ const featuredProject = requireProject(await getProjects(), siteConfig.featured.
         </ul>
 
         <div class="flex items-center gap-1">
+            <ThemeToggle />
             <a
                 href={siteConfig.social.instagram}
                 class="link-mono -m-2 hidden items-center p-2 transition-colors hover:text-accent sm:inline-flex"

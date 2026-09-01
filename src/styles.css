@@ -97,6 +97,33 @@
   }
 }
 
+/* Dark mode — manual override via [data-theme], set by the toggle script in
+   BaseLayout. The media query below covers system preference on its own,
+   with no JavaScript required, as long as the visitor hasn't chosen "light"
+   explicitly. --line and --line-strong are not repeated here: both derive
+   from --ink with color-mix(), so they pick up the dark palette for free. */
+:root[data-theme="dark"] {
+  --canvas: #111110;
+  --surface: #1c1c1a;
+  --surface-strong: #29282a;
+  --ink: #f2f1ee;
+  --muted: #a6a49d;
+  --accent: #d99a5b;
+  --accent-ink: #14110d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #111110;
+    --surface: #1c1c1a;
+    --surface-strong: #29282a;
+    --ink: #f2f1ee;
+    --muted: #a6a49d;
+    --accent: #d99a5b;
+    --accent-ink: #14110d;
+  }
+}
+
 @theme inline {
   --font-sans: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -147,6 +174,15 @@
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html,
+    body {
+      transition:
+        background-color 240ms ease,
+        color 240ms ease;
+    }
   }
 
   /* Paper grain. Purely decorative, never intercepts input. */

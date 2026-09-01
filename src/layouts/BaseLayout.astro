@@ -46,12 +46,35 @@ const ogImage = new URL(social.src, origin).href;
 <!doctype html>
 <html lang="en">
     <head>
+        <script is:inline>
+            // Resolve the theme before anything paints, so there is never a
+            // flash of the wrong palette. Explicit choices from the toggle are
+            // read from localStorage; otherwise the OS preference decides. The
+            // CSS in styles.css also handles the OS preference on its own when
+            // JavaScript is unavailable.
+            (() => {
+                try {
+                    const stored = window.localStorage.getItem("theme");
+                    const theme =
+                        stored === "light" || stored === "dark"
+                            ? stored
+                            : window.matchMedia("(prefers-color-scheme: dark)").matches
+                              ? "dark"
+                              : "light";
+                    document.documentElement.dataset.theme = theme;
+                } catch {
+                    // localStorage can throw in private/locked-down browsing; the
+                    // OS-preference CSS fallback still applies without it.
+                }
+            })();
+        </script>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="author" content={siteConfig.name} />
-        <meta name="theme-color" content={siteConfig.themeColor} />
+        <meta name="theme-color" content={siteConfig.themeColor} media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content={siteConfig.themeColorDark} media="(prefers-color-scheme: dark)" />
         <link rel="canonical" href={canonicalUrl.href} />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         {noindex && <meta name="robots" content="noindex,nofollow" />}
@@ -95,6 +118,43 @@ const ogImage = new URL(social.src, origin).href;
         {includeHeader && <SiteHeader currentPath={Astro.url.pathname} />}
         <slot />
         {includeFooter && <SiteFooter />}
+
+        <script is:inline>
+            // Theme toggle. Delegated from the document so any number of
+            // [data-theme-toggle] buttons (desktop header, mobile menu) share
+            // one handler without re-binding. Without JavaScript the toggle is
+            // inert and the OS-preference CSS in styles.css still applies.
+            (() => {
+                function currentTheme() {
+                    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+                }
+
+                function syncToggles() {
+                    const isDark = currentTheme() === "dark";
+                    document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+                        button.setAttribute("aria-pressed", String(isDark));
+                        const label = button.querySelector("[data-theme-toggle-label]");
+                        if (label) label.textContent = isDark ? "Switch to light mode" : "Switch to dark mode";
+                    });
+                }
+
+                document.addEventListener("click", (event) => {
+                    const target = event.target instanceof Element ? event.target : null;
+                    if (!target || !target.closest("[data-theme-toggle]")) return;
+
+                    const next = currentTheme() === "dark" ? "light" : "dark";
+                    document.documentElement.dataset.theme = next;
+                    try {
+                        window.localStorage.setItem("theme", next);
+                    } catch {
+                        // Ignore — localStorage may be unavailable (private browsing).
+                    }
+                    syncToggles();
+                });
+
+                syncToggles();
+            })();
+        </script>
 
         <script is:inline>
             // Scroll reveals. Each target unobserves itself after firing once, so the
