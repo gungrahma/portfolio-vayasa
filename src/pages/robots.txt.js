@@ -1,5 +1,5 @@
 export function GET({ site }) {
-  const baseUrl = site ?? new URL("https://lamfy.example.com");
+  const baseUrl = site ?? new URL("https://vayasa.example.com");
   const sitemapUrl = new URL("/sitemap-index.xml", baseUrl);
 
   return new Response(`User-agent: *\nAllow: /\n\nSitemap: ${sitemapUrl.href}\n`, {

@@ -1,13 +1,13 @@
-# Lamfy — Astro Photography & Videography Portfolio
+# Vayasa — Astro Photography & Videography Portfolio
 
-[![Lamfy portfolio preview](./preview.webp)](https://lamfy.example.com/)
+[![Vayasa portfolio preview](./preview.webp)](https://vayasa.example.com/)
 
 [![Astro 7](https://img.shields.io/badge/Astro-7-FF5D01?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build/)
 [![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-84cc16?style=for-the-badge)](./LICENSE)
 
-**Live preview:** https://lamfy.example.com/
+**Live preview:** https://vayasa.example.com/
 
 A fast, accessible Astro portfolio theme for a photographer and videographer, where the work speaks for itself. Gallery-grey surfaces, one grotesk cut large and tracked tight, technical mono for metadata, and a single accent colour throughout. Content is Markdown validated by Astro content collections, and the site name, navigation, footer, contact details and featured work all come from one config file. The output is fully static — no framework runtime, and every enhancement degrades to working HTML.
 

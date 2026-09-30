@@ -23,17 +23,17 @@ export interface FooterColumn {
 
 export const siteConfig = {
   /** Display name. Used in the wordmark, metadata, JSON-LD and the footer. */
-  name: "Lamfy",
+  name: "Vayasa",
 
   /** One-line positioning statement. Emitted as the Person "jobTitle"/slogan. */
   tagline: "Photographer & Videographer",
 
   /** Default meta description for pages that do not set their own. */
   description:
-    "Lamfy is a photographer and videographer working across photo editing, video production and post-production — turning moments into images and films that last.",
+    "Vayasa is a photographer and videographer working across photo editing, video production and post-production — turning moments into images and films that last.",
 
   /** Default <title> for pages that do not set their own. */
-  defaultTitle: "Lamfy — Photographer & Videographer",
+  defaultTitle: "Vayasa — Photographer & Videographer",
 
   /** Contact address, linked in the footer, header and contact page. */
   email: "hello@example.com",
@@ -58,7 +58,7 @@ export const siteConfig = {
     src: "/og-image.png",
     width: 1200,
     height: 630,
-    alt: "Lamfy — photographer and videographer",
+    alt: "Vayasa — photographer and videographer",
   },
 
   /** Primary navigation, in order. Also drives the mobile menu. */
@@ -78,7 +78,7 @@ export const siteConfig = {
       heading: "Portfolio",
       links: [
         { label: "All work", href: "/portfolio" },
-        { label: "About Lamfy", href: "/about" },
+        { label: "About Me", href: "/about" },
         { label: "Get in touch", href: "/contact" },
       ],
     },

@@ -1,6 +1,6 @@
 # Customization Guide
 
-Use this guide when adapting the Lamfy portfolio for a real photographer or videographer.
+Use this guide when adapting the Vayasa portfolio for a real photographer or videographer.
 
 ## Site Settings
 

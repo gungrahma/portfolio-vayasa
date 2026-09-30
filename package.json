@@ -1,8 +1,8 @@
 {
-  "name": "lamfy-portfolio",
+  "name": "vayasa-portfolio",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://lamfy.example.com/",
+  "homepage": "https://vayasa.example.com/",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
